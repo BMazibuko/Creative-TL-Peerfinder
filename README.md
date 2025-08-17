@@ -149,4 +149,5 @@ MIT License
 
 ## Contributors
 - Chukwudi Okereafor - Initial development
-- 
+- Bodine Mazibuko - Frontend Contributor
+- Munesu Manyangarirwa - Frontend Contributor
