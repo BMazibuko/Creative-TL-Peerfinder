@@ -309,20 +309,17 @@
       <label for="cohort">Cohort:</label>
       <select id="cohort" name="cohort" required>
         <option value="">--Select--</option>
-        {% for i in range(14, 17) %}
+        {% for i in range(1, 4) %}
           <option value="Cohort {{ i }}">Cohort {{ i }}</option>
         {% endfor %}
       </select>
 
-      <label for="topic_module">I am currently in... (Topic/Module):</label>
+      <label for="topic_module">I am currently in... (Week):</label>
       <select id="topic_module" name="topic_module" required>
         <option value="">--Select--</option>
-        <option value="Module 1: Stepping into the world of AI">Module 1: Stepping into the world of AI</option>
-        <option value="Module 2: Getting smart about AI">Module 2: Getting smart about AI</option>
-        <option value="Module 3: Using AI in the right way">Module 3: Using AI in the right way</option>
-        <option value="Module 4: Becoming more creative at work">Module 4: Becoming more creative at work</option>
-        <option value="Module 5: Becoming a superhero at work">Module 5: Becoming a superhero at work</option>
-        <option value="Module 6: Empower your future with Entrepreneurial Skills">Module 6: Empower your future with Entrepreneurial Skills</option>
+        {% for i in range(1, 16) %}
+          <option value="Week {{ i }}">Week {{ i }}</option>
+        {% endfor %}
       </select>
 
       <label for="learning_preferences">Learning Preferences:</label>
@@ -395,3 +392,4 @@
 </body>
 
 </html>
+
