@@ -263,8 +263,8 @@
 
     <form method="POST" action="{{ url_for('join_queue') }}">
       <input type="hidden" name="connection_type" value="{{ connection_type }}" />
-      <label for="program">program:</label>
-        <select id="program" name="Program" required>
+      <label for="program">Program:</label>
+        <select id="program" name="program" required>
           <option value="">--Select--</option>
           <option value="Graphic Design">Graphic Design</option>
           <option value="Content Creation">Content Creation</option>
@@ -406,6 +406,7 @@
 </body>
 
 </html>
+
 
 
 
