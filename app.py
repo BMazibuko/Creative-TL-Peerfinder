@@ -22,7 +22,7 @@ app.config.update(
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
     MAIL_USERNAME="talentreadiness@alxafrica.com",
-    MAIL_PASSWORD="nkdsiaptwwfdjuay",
+    MAIL_PASSWORD="fcgpvjdytpethaxe",
 )
 mail = Mail(app)
 
@@ -434,4 +434,5 @@ def disclaimer():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
