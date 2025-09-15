@@ -374,7 +374,15 @@
           <option value="Skill exchange">Skill exchange</option>
         </select>
       {% endif %}
-
+       <div style="margin-top: 0.5rem; margin-bottom: 1rem; display: flex; align-items: center;">
+        <input type="checkbox" id="disclaimer_agree" name="disclaimer_agree" required style="margin: 0; margin-right: 8px;" />
+          <label for="disclaimer_agree" style="font-size: 0.98rem; margin: 0;">
+              I have read and accept the
+              <a href="{{ url_for('disclaimer') }}" target="_blank" style="color:#5648B7; font-weight:600; text-decoration:underline;">
+                PeerFinder Disclaimer
+              </a>.
+          </label>
+      </div>
       <div style="margin-top: 1.5rem; text-align: center;">
         <button type="submit">Submit</button>
       </div>
@@ -409,6 +417,7 @@
 </body>
 
 </html>
+
 
 
 
