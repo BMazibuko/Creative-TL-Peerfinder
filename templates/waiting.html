@@ -29,7 +29,7 @@
             letter-spacing: 1px;
         }
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 3rem auto;
             background: rgb(226, 223, 223);
             border-radius: 16px;
@@ -59,18 +59,69 @@
             transition: background 0.2s;
             margin-bottom: 1.5rem;
         }
-        .find-btn:hover {
+        .find-btn:hover:not(:disabled) {
             background: #ffb347;
         }
-        .back-link {
+        .find-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .back-link, .check-status-link {
             display: inline-block;
             margin-top: 1.5rem;
             color: #232f3e;
             text-decoration: none;
             font-weight: 500;
+            margin-right: 1rem;
         }
-        .back-link:hover {
+        .back-link:hover, .check-status-link:hover {
             text-decoration: underline;
+        }
+        /* Flashed messages styles */
+        ul.flashes {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        ul.flashes li.warning {
+            border: 1px solid #f44336;
+            background-color: #ffebee;
+            color: #b71c1c;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        /* Match result table styles */
+        .result {
+            font-size: 1.2rem;
+            color: #388e3c;
+            font-weight: 600;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: #f6f8fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #232f3e;
+            color: #fff;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f1f3f5;
+        }
+        tr.you {
+            background: #ffe0b2;
+            font-weight: 600;
         }
         @media (max-width: 700px) {
             .container {
@@ -80,21 +131,35 @@
             h1 {
                 font-size: 1.4rem;
             }
+            table {
+                font-size: 0.9rem;
+            }
+            th, td {
+                padding: 0.5rem;
+            }
         }
     </style>
     <script>
         async function tryMatch() {
             const user_id = "{{ user_id }}";
-            const response = await fetch('/match', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({user_id})
-            });
-            const data = await response.json();
-            if (data.matched) {
-                window.location.href = "/matched/" + user_id;
-            } else {
-                alert("No match yet. Try again soon!");
+            const findBtn = document.querySelector('.find-btn');
+            // Disable button and show loading state
+            findBtn.disabled = true;
+            findBtn.textContent = 'Finding Matches...';
+            try {
+                const response = await fetch('/match', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ user_id })
+                });
+                const data = await response.json();
+                if (data.redirect) {
+                    window.location.href = data.redirect; // Redirect back to waiting page
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                findBtn.textContent = 'Find Matches Now';
+                findBtn.disabled = false; // Re-enable on error
             }
         }
     </script>
@@ -105,16 +170,52 @@
         <span class="logo-text">PeerFinder</span>
     </div>
     <div class="container">
-        <h1>Waiting to Be Matched</h1>
-        <div class="info">
-            Your request is in the queue.<br>
-            As soon as a suitable peer or group is available, you'll be matched.<br>
-            Kindly copy your <strong>ID</strong> to check your status later, or check your email for notification.<br>
-            <br>
-            <strong>Your ID:</strong> <span style="color:#d06106;">{{ user_id }}</span>
-        </div>
-        <button class="find-btn" onclick="tryMatch()">Find Matches Now</button>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        {% if matched is defined and matched %}
+            <h1>You Are Matched!</h1>
+            <p class="result">You have been matched with the following peer(s):</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>WhatsApp Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in group_members %}
+                    <tr{% if member['id'] == user['id'] %} class="you"{% endif %}>
+                        <td>
+                            {{ member['name'] }}
+                            {% if member['id'] == user['id'] %} <strong>(You)</strong>{% endif %}
+                        </td>
+                        <td>{{ member['email'] }}</td>
+                        <td>{{ member['phone'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h1>Waiting to Be Matched</h1>
+            <div class="info">
+                Your request is in the queue.<br>
+                As soon as a suitable peer or group is available, you'll be matched.<br>
+                Kindly copy your <strong>ID</strong> to check your status later, or check your email for notification.<br>
+                <br>
+                <strong>Your ID:</strong> <span style="color:#d06106;">{{ user_id }}</span>
+            </div>
+        {% endif %}
+        <button class="find-btn" {% if match_attempted %}disabled{% endif %} onclick="tryMatch()">Find Matches Now</button>
         <br>
+        <a href="{{ url_for('check_match') }}" class="check-status-link">Check Match Status</a>
         <a href="{{ url_for('landing') }}" class="back-link">&larr; Back to Home</a>
     </div>
 </body>
