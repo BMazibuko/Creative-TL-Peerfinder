@@ -34,7 +34,7 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 TOKEN_FILE = 'token.json'  # Temporary file for token storage during runtime
 
 # AWS S3 configuration
-AWS_S3_BUCKET = "alx-peer-finder-storage-bucket"
+AWS_S3_BUCKET = "alx-peerfinder-storage-bucket"
 if not AWS_S3_BUCKET:
     raise Exception("AWS_S3_BUCKET environment variable not set")
 s3 = boto3.client('s3')
@@ -696,4 +696,5 @@ def oauth2callback():
 if __name__ == '__main__':
     # Allow HTTP for localhost during OAuth (for local testing)
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
     app.run(debug=True, port=5000)
